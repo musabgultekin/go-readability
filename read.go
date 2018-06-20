@@ -36,6 +36,8 @@ var (
 	rxComments             = regexp.MustCompile(`(?is)<!--[^>]+-->`)
 )
 
+const emptyTagWhitelistSelector = "img"
+
 type candidateItem struct {
 	score float64
 	node  *goquery.Selection
@@ -243,12 +245,12 @@ func getArticleMetadata(doc *goquery.Document) Metadata {
 	}
 
 	// Set final excerpt
-	if _, exist := mapAttribute["description"]; exist {
-		metadata.Excerpt = mapAttribute["description"]
-	} else if _, exist := mapAttribute["og:description"]; exist {
+	if _, exist := mapAttribute["og:description"]; exist {
 		metadata.Excerpt = mapAttribute["og:description"]
 	} else if _, exist := mapAttribute["twitter:description"]; exist {
 		metadata.Excerpt = mapAttribute["twitter:description"]
+	} else if _, exist := mapAttribute["description"]; exist {
+		metadata.Excerpt = mapAttribute["description"]
 	}
 
 	// Set final title
@@ -972,10 +974,12 @@ func postProcessContent(articleContent *goquery.Selection, uri *nurl.URL) {
 
 	// Last time, clean all empty tags and remove id and class name
 	articleContent.Find("*").Each(func(_ int, s *goquery.Selection) {
-		html, _ := s.Html()
-		html = strings.TrimSpace(html)
-		if html == "" {
-			s.Remove()
+		if !s.Is(emptyTagWhitelistSelector) {
+			html, _ := s.Html()
+			html = strings.TrimSpace(html)
+			if html == "" {
+				s.Remove()
+			}
 		}
 
 		s.RemoveAttr("class")
