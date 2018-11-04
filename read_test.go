@@ -185,6 +185,7 @@ func Test_toAbsoluteURI(t *testing.T) {
 		"ftp://ftp.server.com":   "ftp://ftp.server.com",
 		"www.google.com":         "http://localhost:8080/www.google.com",
 		"http//www.google.com":   "http://localhost:8080/http//www.google.com",
+		"//google.com":           "http://google.com",
 	}
 
 	for test, want := range tests {

@@ -927,6 +927,11 @@ func toAbsoluteURI(uri string, base *nurl.URL) string {
 		return ""
 	}
 
+	// Two slash means relative scheme
+	if strings.HasPrefix(uri, "//") {
+		return base.Scheme + ":" + uri
+	}
+
 	// If it is hash tag, return as it is
 	if uri[0:1] == "#" {
 		return uri
