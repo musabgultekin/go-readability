@@ -36,7 +36,7 @@ var (
 	rxComments             = regexp.MustCompile(`(?is)<!--[^>]+-->`)
 )
 
-const emptyTagWhitelistSelector = "img"
+const emptyTagWhitelistSelector = "img,iframe"
 
 type candidateItem struct {
 	score float64
